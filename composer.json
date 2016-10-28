@@ -1,21 +1,5 @@
 {
-    "name": "sostart/loader",
-    "description": "stay hungry, stay foolish",
-    "homepage": "https://github.com/sostart/loader",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "liuming",
-            "email": "sostart.net@gmail.com",
-            "homepage": "http://www.sostart.net/"
-        }
-    ],
     "require": {
-
-    },
-    "autoload": {
-        "psr-4": {
-            "PHPKit\\": ""
-        }
+        "sostart/phpkit": "dev-master"
     }
 }

@@ -1,0 +1,72 @@
+<?php
+// 记录开始运行时间
+!defined('START_TIME') && define('START_TIME', $_SERVER['REQUEST_TIME_FLOAT']);
+
+// 设置未捕获的异常处理函数
+set_exception_handler(function($exception){
+    echo ($exception->getCode()? $exception->getCode().'  ':'').$exception->getMessage(), '<br><br>', $exception->getFile().'  '.$exception->getLine();
+    echo '<pre>', $exception->getTraceAsString(), '</pre>';
+});
+
+// 程序结束的处理
+register_shutdown_function(function(){
+    if (Config('debug')) {
+        $exectime = round(microtime(true)-START_TIME, 3);
+        $exectime = $exectime>1 ? $exectime.' s' : $exectime*1000 . ' ms';
+        echo '<script>console.log(\''.$exectime.'\');</script>';
+    }
+});
+
+// 载入 composer autoload
+$loader = require __DIR__.'/../vendor/autoload.php';
+
+// 设置loader
+PHPKit\PHPKit::setLoader($loader); unset($loader);
+
+// 类别名 PHPKit\PHPKit => PHPKit\App
+PHPKit\PHPKit::classAlias([
+    'PHPKit\App' => PHPKit\PHPKit::class
+]);
+
+/**
+ * 注册/声明 用到的工具 设置初始化方法
+ *
+ * 祝玩的开心 ~ ^___^ ~
+ */
+return PHPKit\PHPKit::registerTools([
+    
+    'PHPKit', 'Helper', 
+    
+    'Heresy' => function () {
+        $heresy = PHPKit\Heresy::getInstance();
+        $heresy->searchNamespace(['PHPKit\\'])->bewitch('\\');
+        return $heresy;
+    },
+
+    'Config' => function () {
+        $config = Config::getInstance();
+        eachdir(__DIR__.'/../config', function ($file) use ($config) {
+            $config->load($file);
+        });
+        return $config;
+    },
+    
+    'View' => function () {
+        $view = View::getInstance();
+        $view->setViewsDir(__DIR__.'/../resources/views');
+        return $view;    
+    },
+    
+    'DB' => function () {
+        $db = DB::getInstance();
+        $db->setConfig(Config('database'));
+        return $db;
+    }, 'AR', 
+    
+    'Session' => function () {
+        $session = Session::getInstance();
+        $session->start(Config('session'));
+        return $session;
+    }
+
+])->alias('phpkit', 'app')->loadTools(['Heresy']);
