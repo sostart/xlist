@@ -1,5 +1,10 @@
 {
     "require": {
         "sostart/phpkit": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
     }
 }
