@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4dfa3f9440c5c3ff2b86e5493210cce0",
+    "hash": "7b3ac60427e5b89e04006356e60b9cec",
     "content-hash": "b1ef3e7e6b3add9dffa26804f96b5ffe",
     "packages": [
         {
@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sostart/phpkit.git",
-                "reference": "fd23871a661742d01805717f573cb844e5039a80"
+                "reference": "cc6b56e10a774bedfddb3eb30b6339fd09deee6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://packagist.phpcomposer.com/files/sostart/phpkit/fd23871a661742d01805717f573cb844e5039a80.zip",
-                "reference": "fd23871a661742d01805717f573cb844e5039a80",
+                "url": "https://packagist.phpcomposer.com/files/sostart/phpkit/cc6b56e10a774bedfddb3eb30b6339fd09deee6d.zip",
+                "reference": "cc6b56e10a774bedfddb3eb30b6339fd09deee6d",
                 "shasum": ""
             },
             "type": "library",
@@ -40,7 +40,7 @@
             ],
             "description": "stay hungry, stay foolish",
             "homepage": "https://github.com/sostart/phpkit",
-            "time": "2016-10-20 08:28:07"
+            "time": "2016-11-11 09:34:49"
         }
     ],
     "packages-dev": [],

@@ -21,7 +21,7 @@ register_shutdown_function(function(){
 $loader = require __DIR__.'/../vendor/autoload.php';
 
 // 设置loader
-PHPKit\PHPKit::setLoader($loader); unset($loader);
+PHPKit\PHPKit::set('loader', $loader); unset($loader);
 
 // 类别名 PHPKit\PHPKit => PHPKit\App
 PHPKit\PHPKit::classAlias([
@@ -29,7 +29,7 @@ PHPKit\PHPKit::classAlias([
 ]);
 
 /**
- * 注册/声明 用到的工具 设置初始化方法
+ * 注册用到的工具 设置初始化方法
  *
  * 祝玩的开心 ~ ^___^ ~
  */
@@ -53,8 +53,8 @@ return PHPKit\PHPKit::registerTools([
     
     'View' => function () {
         $view = View::getInstance();
-        $view->setViewsDir(__DIR__.'/../resources/views');
-        return $view;    
+        $view->addViewsDir(Config('view.paths'));
+        return $view;
     },
     
     'DB' => function () {
@@ -62,6 +62,8 @@ return PHPKit\PHPKit::registerTools([
         $db->setConfig(Config('database'));
         return $db;
     }, 'AR', 
+
+    'API', 'Route',
     
     'Session' => function () {
         $session = Session::getInstance();
@@ -69,4 +71,5 @@ return PHPKit\PHPKit::registerTools([
         return $session;
     }
 
+// 设置工具别名及自动载入工具
 ])->alias('phpkit', 'app')->loadTools(['Heresy']);
