@@ -1,5 +1,7 @@
 <?php
 
+namespace App\API\v1;
+
 class UserAPI
 {
     protected static function loginRules()

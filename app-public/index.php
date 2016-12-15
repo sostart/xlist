@@ -2,6 +2,6 @@
 
 require __DIR__.'/../bootstrap/heresy.php';
 
-require __DIR__.'/../bootstrap/route.php';
+require __DIR__.'/../bootstrap/module-route.php';
 
-Route::dispatch();
+require Config('modules')[Config('app.active-module')]['dir'].'/bootstrap.php';

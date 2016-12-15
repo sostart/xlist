@@ -5,10 +5,11 @@ App()->registerDirs(['App\\'=>__DIR__]);
 // 视图
 Config('view.paths', array_merge(Config('view.paths'), [__DIR__.'/View']));
 
-// API 路由
-Route::group('/api', function () {
+// 路由
+if (Config('app.run-mode')=='api') {
     require __DIR__.'/API/route.php';
-});
+} elseif (Config('app.run-mode')=='mvc') {
+    require __DIR__.'/Controller/route.php';
+}
 
-// controller 路由
-Route::get('/', 'IndexController::index');
+Route::dispatch( substr(uri(), strlen(Config('modules')[Config('app.active-module')][Config('app.run-mode').'-uri-prefix'])) ? : '/' );
