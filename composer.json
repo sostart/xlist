@@ -1,4 +1,15 @@
 {
+    "name": "sostart/heresy",
+    "description": "stay hungry, stay foolish",
+    "homepage": "https://github.com/sostart/heresy",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "liuming",
+            "email": "sostart.net@gmail.com",
+            "homepage": "http://www.sostart.net/"
+        }
+    ],
     "require": {
         "sostart/phpkit": "dev-master"
     }
