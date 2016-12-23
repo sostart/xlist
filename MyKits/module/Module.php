@@ -19,23 +19,23 @@ class Module
         return static::$name();
     }
 
-    protected static function active()
+    protected static function API_active($module=false)
     {
-        return static::$active;
+        return (static::$active = $module?:static::$active);
     }
 
-    protected static function mode()
+    protected static function API_mode($mode=false)
     {
-        return static::$mode;
+        return (static::$mode = $mode?:static::$mode);
     }
 
-    protected static function _register($modules)
+    protected static function API_register($modules)
     {
         static::$modules = $modules;
     }
     
     // 根据模块配置确定当前请求的 模块&模式
-    protected static function _resolve()
+    protected static function API_resolve()
     {
         if (php_sapi_name() == 'cli') {
             static::cliReslove();

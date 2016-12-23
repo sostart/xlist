@@ -9,10 +9,12 @@ App::registerTools(['Module'=>[__DIR__.'/../MyKits', function () {
 (Config('app.active-module')===true) && Config('app.active-module', Module()->active);
 (Config('app.run-mode')===true) && Config('app.run-mode', Module()->mode);
 
-// 根据运行模式设置dispatch
 if (Config('app.run-mode')=='mvc') {
 
     Route::setDispatcher(function ($routeInfo) {
+        
+        $callable = false;
+
         if ($routeInfo[0] == Route::FOUND) {
             if (is_callable($routeInfo[1][1])) {
                 $callable = $routeInfo[1][1];
@@ -20,6 +22,7 @@ if (Config('app.run-mode')=='mvc') {
                 $callable = 'App\Controller\\'.$routeInfo[1][1];
             }
         } elseif ($routeInfo[0] == Route::NOT_FOUND) {
+            // 未找到路由, 并开启了默认路由
             if (Config('app.mvc-defaut-route')) {
                 $arr = explode(
                     '/',
@@ -27,8 +30,6 @@ if (Config('app.run-mode')=='mvc') {
                 );
                 $action = array_pop($arr);
                 $callable = ['App\Controller\\'.implode('\\', $arr).'Controller', $action];
-            } else {
-                $callable = false;
             }
         }
 
@@ -41,8 +42,6 @@ if (Config('app.run-mode')=='mvc') {
     });
 }
 
-
-// 根据运行模式设置dispatch
 if (Config('app.run-mode')=='api') {
 
     Route::setDispatcher(function ($routeInfo) {
