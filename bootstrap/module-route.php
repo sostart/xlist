@@ -55,3 +55,22 @@ if (Config('app.run-mode')=='api') {
         }
     });
 }
+
+if (Config('app.run-mode')=='cli') {
+
+    Route::setDispatcher(function ($routeInfo) {
+        if ($routeInfo[0] == Route::FOUND) {
+            if (is_callable($routeInfo[1][1])) {
+                $callable = $routeInfo[1][1];
+            } elseif (is_string($routeInfo[1][1]) && strpos($routeInfo[1][1], 'Command')) {
+                $callable = 'App\Command\\'.$routeInfo[1][1];
+            }
+        } elseif ($routeInfo[0] == Route::NOT_FOUND) {
+            $callable = false;
+        }
+
+        if (is_callable($callable)) {
+            call_user_func_array($callable, $routeInfo[2]);
+        }
+    });
+}

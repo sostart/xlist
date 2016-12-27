@@ -10,7 +10,7 @@ set_exception_handler(function($exception){
 
 // 程序结束的处理
 register_shutdown_function(function(){
-    if (Config('app.debug') && Config('app.run-mode')=='mvc') {
+    if (Config('app.debug') && (php_sapi_name()!='cli') && Config('app.run-mode')=='mvc') {
         $exectime = round(microtime(true)-START_TIME, 3);
         $exectime = $exectime>1 ? $exectime.' s' : $exectime*1000 . ' ms';
         echo '<script>console.log(\''.Config('app.active-module').'-'.Config('app.run-mode').' '.$exectime.'\');</script>';
