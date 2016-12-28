@@ -7,8 +7,8 @@ if (!function_exists('Module')) {
     }
 }
 
-// 重写uri函数, 区分cli和web模式, web模式下自动去除模块前缀
-call_user_func(function () {
+// Module模块载入后重写uri函数, 区分cli和web模式, web模式下自动去除模块前缀
+Event::listen('kit.module.loaded', function () {
     $uri = clone Helper()->uri;
     Helper()->register('uri', function () use ($uri) {
         if (php_sapi_name() == 'cli') {

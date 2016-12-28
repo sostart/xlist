@@ -35,7 +35,7 @@ PHPKit\PHPKit::classAlias([
  */
 return PHPKit\PHPKit::registerTools([
     
-    'PHPKit', 'Helper', 
+    'PHPKit', 'Helper', 'Event',
     
     'Heresy' => function () {
         $heresy = PHPKit\Heresy::getInstance();

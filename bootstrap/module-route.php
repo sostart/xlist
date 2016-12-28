@@ -2,7 +2,7 @@
 
 App::registerTools(['Module'=>[__DIR__.'/../MyKits', function () {
     $module = Module::getInstance();
-    $module->register(Config('modules'))->resolve();
+    $module->register(Config('modules'))->resolve(); Event::fire('kit.module.loaded');
     return $module;
 }]])->loadTools(['Module']);
 
