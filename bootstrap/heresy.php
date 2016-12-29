@@ -2,7 +2,7 @@
 // 记录开始运行时间
 !defined('START_TIME') && define('START_TIME', $_SERVER['REQUEST_TIME_FLOAT']);
 
-// 设置未捕获的异常处理函数
+// 设置未捕获的异常处理方法
 set_exception_handler(function($exception){
     echo ($exception->getCode()? $exception->getCode().'  ':'').$exception->getMessage(), '<br><br>', $exception->getFile().'  '.$exception->getLine();
     echo '<pre>', $exception->getTraceAsString(), '</pre>';
@@ -23,19 +23,14 @@ $loader = require __DIR__.'/../vendor/autoload.php';
 // 设置loader
 PHPKit\PHPKit::set('loader', $loader); unset($loader);
 
-// 类别名 PHPKit\PHPKit => PHPKit\App
-PHPKit\PHPKit::classAlias([
-    'PHPKit\App' => PHPKit\PHPKit::class
-]);
-
 /**
- * 注册用到的工具 设置初始化方法
+ * 注册用到的工具 设置工具初始化方法(需返回工具实例)
  *
  * 祝玩的开心 ~ ^___^ ~
  */
 return PHPKit\PHPKit::registerTools([
     
-    'PHPKit', 'Helper', 'Event',
+    'Helper', 'Event',
     
     'Heresy' => function () {
         $heresy = PHPKit\Heresy::getInstance();
@@ -71,5 +66,5 @@ return PHPKit\PHPKit::registerTools([
         return $session;
     }
 
-// 设置工具别名及自动载入工具
-])->alias('phpkit', 'app')->loadTools(['Heresy']);
+// 设置工具别名alias 及自动载入工具loadTools
+])->loadTools(['Heresy']);
