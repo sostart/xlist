@@ -4,7 +4,7 @@ return call_user_func(function () {
 
     return [
         'App' => [
-            'dir'=>__DIR__.'/../App',
+            'dir'=>__DIR__.'/../app',
             'mvc-server-name' => $domain,
             'mvc-uri-prefix' => '/',
             'api-server-name'=> $domain,

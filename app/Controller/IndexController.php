@@ -6,6 +6,6 @@ class IndexController
 {
     public static function index()
     {
-        echo View::render('welcome');
+        echo View::render('index', ['title'=>'hello, world']);
     }
 }

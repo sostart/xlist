@@ -18,3 +18,50 @@ API版本采用向下兼容策略,新版本尽量兼容老版本
     二 设计软件界面
     三 业务逻辑实现及交互逻辑开发(整合接口和界面 主要在js和controller中完成)
 
+Api
+
+View
+
+Model
+
+远古
+    HTTP -> 多入口 数据/逻辑/视图 纠缠
+
+AJAX流行前的WEB-MVC
+    HTTP -> Controller 通过Model获取数据? -> 渲染并展示 View
+
+AJAX流行后WEB-MVC
+    HTTP -> Controller 通过Model获取数据? -> 渲染并展示 View
+    已展示的视图View -> HTTP-AJAX -> Controller 
+                                                (通过Model获取数据?) -> 渲染并展示 View
+                                                通过Model获取数据    -> 返回格式化数据 -> View视图层逻辑根据数据渲染并展示
+RESTful改进的WEB-MVC
+    流程
+        HTTP -> Route -> (Controller? Model?)获取 数据 渲染View并展示
+        已展示的视图View -> HTTP-AJAX -> Route -> (Controller? Model?)
+                                                                     -> 渲染并展示 View
+                                                                     -> 返回格式化数据 -> View视图层逻辑根据数据渲染并展示
+    其它
+        通过Route+HTTP-method 优雅的扩展了同一个uri的功能
+
+RESTful+API改进的WEB-RAMVC(RESTful API MVC)
+    流程
+        HTTP -> API-Route(RESTful?) -> API -> Model 数据
+        HTTP -> Controller-Route(RESTful?) -> Controller (请求 API 数据)? -> 渲染并展示 View
+        已展示的视图View -> HTTP-AJAX -> API -> Model 数据
+    其它
+        API+RESTful 不只是 RESTful API 主要是 区分 API和View 强调API是整个WEB服务的基础
+        Controller 主要用来在服务端渲染视图 (适应搜索引擎)
+
+Controller-Route - 视图
+/
+/articles
+/ucenter
+/admin
+/admin/admins
+/admin/admins/1
+/admin/articles
+
+API-Route - 数据 & 逻辑
+POST /api/articles
+GET  /api/articles/1

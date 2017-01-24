@@ -6,6 +6,6 @@ return [
         __DIR__.'/../resources/views'
     ],
 
-    // 'compiled' => realpath(storage_path('framework/views')),
+    'compiled' => false
 
 ];

@@ -48,7 +48,7 @@ return PHPKit\PHPKit::registerTools([
     
     'View' => function () {
         $view = View::getInstance();
-        $view->addViewsDir(Config('view.paths'));
+        $view->addViewsDir(Config('view.paths'))->setCompileDir(Config('view.compiled'));
         return $view;
     },
     

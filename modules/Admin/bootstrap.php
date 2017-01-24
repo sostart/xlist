@@ -9,7 +9,9 @@ Config('view.paths', array_merge(Config('view.paths'), [__DIR__.'/View']));
 if (Config('app.run-mode')=='api') {
     require __DIR__.'/API/route.php';
 } elseif (Config('app.run-mode')=='mvc') {
-    Route::get('/', 'IndexController::index');
+    require __DIR__.'/Controller/route.php';
+} elseif (Config('app.run-mode')=='cli') {
+    require __DIR__.'/Command/route.php';
 }
 
-Route::dispatch( substr(uri(), strlen(Config('modules')[Config('app.active-module')][Config('app.run-mode').'-uri-prefix'])) ? : '/' );
+Route::dispatch( uri() );

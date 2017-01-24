@@ -4,7 +4,7 @@ return [
 
     'driver'   => 'file',
 
-    'cookieid' => 'PHPSESSID',
+    'cookie' => 'PHPSESSID',
 
-    'tokenid'  => 'token',
+    'token'  => 'token',
 ];
