@@ -64,7 +64,11 @@ return PHPKit\PHPKit::registerTools([
         $session = Session::getInstance();
         $session->start(Config('session'));
         return $session;
-    }
+    },
+    
+    'Input',
+
+    'Response'
 
 // 设置工具别名alias 及自动载入工具loadTools
 ])->loadTools(['Heresy']);

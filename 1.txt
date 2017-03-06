@@ -1,5 +1,9 @@
-只关注 功能
-根据功能设计 接口(接口/参数/返回值)
+heresy基于phpkit并紧随phpkit更新,是phpkit的使用示例
+
+"过早优化是万恶之源" -- 缺乏对于未来的预见和掌控能力同样是万恶之源 -- 同样不知道真正的需求也是万恶之源 -- 而脱离需求谈功能和设计都是耍流氓
+
+专注于功能 根据功能设计接口(命名/参数/返回值)
+模块化 模块通过API提供服务 模块间相互独立(可分布式部署)
 
 Api          专注于提供接口服务
 Controller   请求API获得数据传入视图渲染
@@ -25,16 +29,16 @@ View
 Model
 
 远古
-    HTTP -> 多入口 数据/逻辑/视图 纠缠
+    HTTP -> 多入口 -> 数据/逻辑/视图 纠缠
 
 AJAX流行前的WEB-MVC
-    HTTP -> Controller 通过Model获取数据? -> 渲染并展示 View
+    HTTP -> 单入口 -> Controller (通过Model获取数据)? -> 渲染并展示 View
 
 AJAX流行后WEB-MVC
-    HTTP -> Controller 通过Model获取数据? -> 渲染并展示 View
+    HTTP -> Controller (通过Model获取数据)? -> 渲染并展示 View
     已展示的视图View -> HTTP-AJAX -> Controller 
-                                                (通过Model获取数据?) -> 渲染并展示 View
-                                                通过Model获取数据    -> 返回格式化数据 -> View视图层逻辑根据数据渲染并展示
+                                                (通过Model获取数据)? -> 渲染并展示 View
+                                                (通过Model获取数据)? -> 返回格式化数据 -> View视图层逻辑根据数据渲染并展示
 RESTful改进的WEB-MVC
     流程
         HTTP -> Route -> (Controller? Model?)获取 数据 渲染View并展示
@@ -44,7 +48,7 @@ RESTful改进的WEB-MVC
     其它
         通过Route+HTTP-method 优雅的扩展了同一个uri的功能
 
-RESTful+API改进的WEB-RAMVC(RESTful API MVC)
+RESTful+API改进(RESTful API MVC)
     流程
         HTTP -> API-Route(RESTful?) -> API -> Model 数据
         HTTP -> Controller-Route(RESTful?) -> Controller (请求 API 数据)? -> 渲染并展示 View
