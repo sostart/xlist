@@ -26,7 +26,7 @@ if (Config('app.run-mode')=='mvc') {
             if (Config('app.mvc-defaut-route')) {
                 $arr = explode(
                     '/',
-                    trim((Config('app.active-module')?substr(uri(), strlen(Config('modules')[Config('app.active-module')][Config('app.run-mode').'-uri-prefix'])):uri()), '/')
+                    trim(uri(), '/')
                 );
                 $action = array_pop($arr);
                 $callable = ['App\Controller\\'.implode('\\', $arr).'Controller', $action];

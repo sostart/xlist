@@ -15,9 +15,9 @@ Event::listen('kit.module.loaded', function () {
             return isset($_SERVER['argv'][2])?$_SERVER['argv'][2]:'/';
         } else {
             if (func_num_args()) {
-                return rtrim(Config('modules')[Config('app.active-module')][Config('app.run-mode').'-uri-prefix']?:'/', '/') . call_user_func_array($uri, func_get_args());
+                return '/'.trim(Config('modules')[Config('app.active-module')][Config('app.run-mode').'-uri-prefix']?:'/', '/') . call_user_func_array($uri, func_get_args());
             } else {
-                return substr(call_user_func_array($uri, func_get_args()), strlen(Config('modules')[Config('app.active-module')][Config('app.run-mode').'-uri-prefix'])) ? : '/';
+                return '/'.trim(substr(call_user_func_array($uri, func_get_args()), strlen(Config('modules')[Config('app.active-module')][Config('app.run-mode').'-uri-prefix']))?:'/','/');
             }            
         }
     });
