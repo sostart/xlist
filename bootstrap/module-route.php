@@ -49,14 +49,18 @@ if (Config('app.run-mode')=='mvc') {
                         throw new Exception('中间件未定义 '.$middleware);
                     }
                 }
-                foreach ($callables as $callable) {
-                    if (!is_null($response = call_user_func_array($callable, $routeInfo[2]))) {
-                        if (!is_object($response) || get_class($response)!=='PHPKit\Response') {
-                            echo Response()->content($response);
-                        }
-                        break 2;
-                    }
+            }
+
+            foreach ($callables as $callable) {
+                if (!is_null($response = call_user_func_array($callable, $routeInfo[2]))) {
+                    break;
                 }
+            }
+
+            if (!is_object($response) || get_class($response)!=='PHPKit\Response') {
+                echo Response()->content($response);
+            } else {
+                echo Response();
             }
         } else {
             echo Response()->status(404)->message('Not Found')->content(View('errors.404'));
@@ -97,15 +101,18 @@ if (Config('app.run-mode')=='api') {
                         throw new Exception('中间件未定义 '.$middleware);
                     }
                 }
-                foreach ($callables as $callable) {
-                    if (!is_null($data = call_user_func($callable, $params))) {
-                        break 2;
-                    }
+            }
+
+            foreach ($callables as $callable) {
+                if (!is_null($data = call_user_func($callable, $params))) {
+                    break;
                 }
             }
 
             if (!is_object($data) || get_class($data)!=='PHPKit\Response') {
                 Response()->content($data);
+            } else {
+                echo Response();
             }
         } else {
             Response()->status(404)->message('未找到接口');
