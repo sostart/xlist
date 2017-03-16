@@ -14,7 +14,7 @@ register_shutdown_function(function(){
         $exectime = round(microtime(true)-START_TIME, 3);
         $exectime = $exectime>1 ? $exectime.' s' : $exectime*1000 . ' ms';
         $response = json_decode(ob_get_contents(), true);
-        if ($response===NULL) {
+        if (!is_array($response)) {
             echo '<script>console.log(\''.Config('app.active-module').'-'.Config('app.run-mode').' '.$exectime.'\');</script>';
         } else {
             ob_clean();
@@ -75,7 +75,9 @@ return PHPKit\PHPKit::registerTools([
     
     'Input',
 
-    'Response'
+    'Response',
+
+    'Is'
 
 // 设置工具别名alias 及自动载入工具loadTools
 ])->loadTools(['Heresy']);

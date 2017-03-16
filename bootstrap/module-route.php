@@ -52,8 +52,16 @@ if (Config('app.run-mode')=='mvc') {
             }
 
             foreach ($callables as $callable) {
-                if (!is_null($response = call_user_func_array($callable, $routeInfo[2]))) {
-                    break;
+                if (is_callable($callable)) {
+                    if (!is_null($response = call_user_func_array($callable, $routeInfo[2]))) {
+                        break;
+                    }
+                } elseif (class_exists($callable)) {
+                    if (!is_null($response = call_user_func_array(new $callable, $routeInfo[2]))) {
+                        break;
+                    }
+                } else {
+                    throw new Exception('中间件不能运行 '.$callable);
                 }
             }
 
@@ -106,6 +114,12 @@ if (Config('app.run-mode')=='api') {
             foreach ($callables as $callable) {
                 if (!is_null($data = call_user_func($callable, $params))) {
                     break;
+                } elseif (class_exists($callable)) {
+                    if (!is_null($data = call_user_func_array(new $callable, $params))) {
+                        break;
+                    }
+                } else {
+                    throw new Exception('中间件不能运行 '.$callable);
                 }
             }
 
