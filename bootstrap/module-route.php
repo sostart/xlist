@@ -61,7 +61,7 @@ if (Config('app.run-mode')=='mvc') {
                         break;
                     }
                 } else {
-                    throw new Exception('中间件不能运行 '.$callable);
+                    throw new Exception('中间件不能运行 或 最终回调返回了NULL(或未返回任何内容) '.$callable);
                 }
             }
 
@@ -101,7 +101,7 @@ if (Config('app.run-mode')=='api') {
 
             foreach ($routeInfo[1][0] as $middleware) {
                 if (is_callable($middleware)) {
-                    $callables = [$middleware];
+                    $callables[] = $middleware;
                 } else {
                     if (is_string($middleware) && isset($middlewares[$middleware])) {
                         $callables = is_array($middlewares[$middleware]) ? $middlewares[$middleware] : [$middlewares[$middleware]];
@@ -112,14 +112,16 @@ if (Config('app.run-mode')=='api') {
             }
 
             foreach ($callables as $callable) {
-                if (!is_null($data = call_user_func($callable, $params))) {
-                    break;
+                if (is_callable($callable)) {
+                    if (!is_null($data = call_user_func_array($callable, [&$params]))) {
+                        break;
+                    }
                 } elseif (class_exists($callable)) {
-                    if (!is_null($data = call_user_func_array(new $callable, $params))) {
+                    if (!is_null($data = call_user_func_array(new $callable, [&$params]))) {
                         break;
                     }
                 } else {
-                    throw new Exception('中间件不能运行 '.$callable);
+                    throw new Exception('中间件不能运行 或 最终回调返回了NULL(或未返回任何内容) '.$callable);
                 }
             }
 
