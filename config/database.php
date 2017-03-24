@@ -5,9 +5,9 @@ return [
     'default' => 'mysql',
     
     'connections' => [
-        'mysql'=>[
+        'mysql' => [
             'read' => array(
-                'host' => '127.0.0.1:3306',
+                ['host' => '127.0.0.1:3306'],
             ),
             'write' => array(
                 'host' => '127.0.0.1:3306'

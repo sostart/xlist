@@ -4,7 +4,8 @@ return [
 
     'driver'   => 'file',
 
-    'cookie' => 'PHPSESSID',
+    'save_path' => __DIR__.'/../storage/framework/sessions',
 
-    'token'  => 'token',
+    'cookie_name' => 'PHPSESSID',
+
 ];

@@ -77,6 +77,8 @@ if (Config('app.run-mode')=='mvc') {
 }
 
 if (Config('app.run-mode')=='api') {
+    
+    Response::json();
 
     Route::setDispatcher(function ($routeInfo) {
         if ($routeInfo[0] == Route::FOUND) {
@@ -96,7 +98,7 @@ if (Config('app.run-mode')=='api') {
             $params = array_merge($_REQUEST, $routeInfo[2]);
 
             if (isset($params['callback'])) {
-                $callback = $params['callback'];
+                Response()->json($params['callback']);
             }
 
             foreach ($routeInfo[1][0] as $middleware) {
@@ -126,15 +128,13 @@ if (Config('app.run-mode')=='api') {
             }
 
             if (!is_object($data) || get_class($data)!=='PHPKit\Response') {
-                Response()->content($data);
+                echo Response()->content($data);
             } else {
                 echo Response();
             }
         } else {
-            Response()->status(404)->message('未找到接口');
+            echo Response()->status(404)->message('未找到接口');
         }
-        
-        echo Response()->json(isset($callback)?$callback:null);
     });
 }
 

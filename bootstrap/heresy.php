@@ -73,11 +73,21 @@ return PHPKit\PHPKit::registerTools([
         return $session;
     },
     
-    'Input',
+    'Cache' => function () {
+        $cache = Cache::getInstance();
+        $cache->setConfig(Config('cache'));
+        return $cache;
+    },
 
-    'Response',
+    'Input', 'Response',
 
-    'Is'
+    'Is',
+
+    'Email' => function () {
+        $email = Email::getInstance();
+        $email->setConfig(Config('email'));
+        return $email;
+    }
 
 // 设置工具别名alias 及自动载入工具loadTools
 ])->loadTools(['Heresy']);
