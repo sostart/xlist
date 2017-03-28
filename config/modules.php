@@ -9,20 +9,20 @@ return call_user_func(function () {
             'dir'=>__DIR__.'/../app',
             'mvc-protocol' => 'http',
             'mvc-server-name' => $domain,
-            'mvc-uri-prefix' => '/',
+            'mvc-path-prefix' => '/',
             'api-protocol' => 'http',
             'api-server-name'=> $domain,
-            'api-uri-prefix'=>'/api'
+            'api-path-prefix'=>'/api'
         ],
 
         'Admin' => [
             'dir'=>__DIR__.'/../modules/Admin',
             'mvc-protocol' => 'http',
             'mvc-server-name' => $domain,
-            'mvc-uri-prefix'=>'/admin',
+            'mvc-path-prefix'=>'/admin',
             'api-protocol' => 'http',
             'api-server-name'=> $domain,
-            'api-uri-prefix'=>'/admin/api'
+            'api-path-prefix'=>'/admin/api'
         ],
     ];
 });

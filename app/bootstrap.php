@@ -14,4 +14,4 @@ if (Config('app.run-mode')=='api') {
     require __DIR__.'/Command/route.php';
 }
 
-Route::dispatch( uri() );
+Route::dispatch( path() );

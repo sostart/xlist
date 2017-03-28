@@ -61,18 +61,18 @@ class Module
         foreach (static::$modules as $module=>$config) {
             foreach (['mvc', 'api'] as $mode) {
                 $sn = $config[$mode.'-server-name']?true:false;
-                $uri = rtrim($config[$mode.'-uri-prefix'], '/');
-                $trait = ($sn?$config[$mode.'-server-name']:'').$uri;
+                $path = rtrim($config[$mode.'-path-prefix'], '/');
+                $trait = ($sn?$config[$mode.'-server-name']:'').$path;
                 
                 if (isset($container[$trait])) {
                     throw new Exception('模块配置有问题 请检查');
                 }
 
                 $container[$trait] = true;
-                if (preg_match('~^'.$trait.'(/.*)?$~i', ($sn?$_SERVER['HTTP_HOST']:'').uri())) {
+                if (preg_match('~^'.$trait.'(/.*)?$~i', ($sn?$_SERVER['HTTP_HOST']:'').path())) {
                     // 域名匹配优先  uri更匹配优先
-                    if (!isset($bingo[2]) || (!$bingo[2] && $sn) || (($bingo[2] == $sn) && (strlen($uri)>$bingo[3]))) {
-                        $bingo = [$module, $mode, $sn, strlen($uri)];
+                    if (!isset($bingo[2]) || (!$bingo[2] && $sn) || (($bingo[2] == $sn) && (strlen($path)>$bingo[3]))) {
+                        $bingo = [$module, $mode, $sn, strlen($path)];
                     }
                 }
             }
