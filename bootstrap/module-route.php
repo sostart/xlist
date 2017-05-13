@@ -9,6 +9,29 @@ App::registerTools(['Module'=>[__DIR__.'/../MyKits', function () {
 (Config('app.active-module')===true) && Config('app.active-module', Module()->active);
 (Config('app.run-mode')===true) && Config('app.run-mode', Module()->mode);
 
+App::registerTools(['API' => function () {
+    $api = API::getInstance();
+    if (is_string(Config('app.active-module'))) {
+        $config = Config('modules')[Config('app.active-module')];
+        $api->setConfig(['domain' => $config['api-protocol'].'://'.$config['api-server-name'].$config['api-path-prefix'], 
+            'params' => ['token'=>Session('token')],
+            'callback' => function ($rs, $callback) {
+                $rs = json_decode($rs, true);
+                if ($rs && $rs['status']==200) {
+                    return $callback?call_user_func($callback, $rs):$rs['data'];
+                } else {
+                    if ($rs['status']=='401' && $rs['data']=='notlogin') {
+                        Session::destroy();
+                        return false;
+                    }
+                    return null;
+                }
+            }
+        ]);
+    }
+    return $api;
+}]);
+
 if (Config('app.run-mode')=='mvc') {
 
     Route::setDispatcher(function ($routeInfo) {
@@ -20,6 +43,10 @@ if (Config('app.run-mode')=='mvc') {
                 $callable = $routeInfo[1][1];
             } elseif (is_string($routeInfo[1][1]) && strpos($routeInfo[1][1], 'Controller::')) {
                 $callable = 'App\Controller\\'.$routeInfo[1][1];
+            } elseif (is_string($routeInfo[1][1]) && (substr($routeInfo[1][1], -4)=='View')) {
+                $callable = function () use ($routeInfo) {
+                    return View::render(substr($routeInfo[1][1], 0, -4));
+                };
             }
         } elseif ($routeInfo[0] == Route::NOT_FOUND) {
             // 未找到路由, 并开启了默认路由
