@@ -1,0 +1,56 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "a4c4355c676fd3bb41d5b4d68f7c6a02",
+    "content-hash": "be827f141e8e97d5341d62a76ec7b06a",
+    "packages": [
+        {
+            "name": "sostart/phpkit",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sostart/phpkit.git",
+                "reference": "19b2473c9372a032b10e79fc609816cadb01c0ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://packagist.phpcomposer.com/files/sostart/phpkit/19b2473c9372a032b10e79fc609816cadb01c0ad.zip",
+                "reference": "19b2473c9372a032b10e79fc609816cadb01c0ad",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPKit\\": "phpkit/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "liuming",
+                    "email": "sostart.net@gmail.com",
+                    "homepage": "http://www.sostart.net/"
+                }
+            ],
+            "description": "stay hungry, stay foolish",
+            "homepage": "https://github.com/sostart/phpkit",
+            "time": "2016-12-16 04:00:54"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "sostart/phpkit": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
