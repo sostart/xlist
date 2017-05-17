@@ -100,15 +100,13 @@ Project.prototype.bindEvent = function () {
   });
 
   // 圆点
+  var storage = [];
   this.domDot().hover(function () {
       $(this).addClass('dot-hover');
   }, function () {
       $(this).removeClass('dot-hover');
   }).click(function () {
-      // @todo zoomin
-      var data = xlist[project.data('id')]['children'];
-      $('.container').html('');
-      Project.render(data, $('.container'));
+      project.zoomin();
   });
 
   // 标题
@@ -138,10 +136,14 @@ Project.prototype.bindEvent = function () {
           } else if (e.keyCode==38) {
               project.packup(); // 收起
               return false;
+          } else if (e.keyCode==39) {
+              project.zoomin();// zoomin
+          } else if (e.keyCode==37) {
+              project.zoomout();
           } else if (e.keyCode==83) { // 保存
               project.parse();
               $(this).change();
-              Project.batchUpdate();
+              Xlist.batchUpdate();
               return false;
           } else if (e.keyCode==13) {
               if (project.data('is_completed')==1) {
@@ -197,7 +199,7 @@ Project.prototype.bindEvent = function () {
           } else if (e.keyCode==83) { // 保存
               project.parse();
               $(this).change();
-              Project.batchUpdate();
+              Xlist.batchUpdate();
               return false;
           } else if (e.keyCode==13) {
               if (project.data('is_completed')==1) {
@@ -383,9 +385,11 @@ Project.prototype.hasChildren = function () {
 // 修改
 Project.prototype.setData = function (k, v) {
   this.data(k, v).render();
+
   var obj = {};
   obj[k] = v;
-  Project.log(this.data('id'), obj);
+  Xlist.setData(this.data('id'), obj);
+
   return this;
 }
 
@@ -543,7 +547,7 @@ Project.prototype.sorting = function () {
 
   var sort = (pre+Number(i)).toFixed(15);
 
-  console.log('i', i , 'l', l, 'sort', sort);
+  //console.log('i', i , 'l', l, 'sort', sort);
 
   project.setData('sort', sort);
 
@@ -577,6 +581,20 @@ Project.prototype.addChildren = function (p, top) {
   }
 }
 
+// zoomin
+Project.prototype.zoomin = function () {
+  Xlist.zoomin($(this).data('id'));
+}
+
+// zoomout
+Project.prototype.zoomout = function () {
+  if (this.getParent()) {
+    this.getParent().zoomout();
+  } else {
+    Xlist.zoomin(this.data('pid'));
+  }
+}
+
 // ------------------------------------------
 // 创建
 Project.create = function (config) {
@@ -588,59 +606,152 @@ Project.create = function (config) {
   return $($('#project').html()).xlist().data(config).bindEvent().render();
 }
 
-// 渲染到画布
-Project.render = function (arr, container) {
-  if (arr.length==0) {
-    var p = new Project();
-    container.append(p);
-    p.sorting();
-  } else {
-    $.each(arr, function (k, v) {
-      var p = new Project(v);
-      container.append(p);
-      if (!$.isEmptyObject(v.children)) {
-        Project.render(v.children, p.domChildren());
-        p.render();// 父级重新渲染
-      }
-    });
-  }
-}
-
-// 记录属性修改
-Project.changes = [];
-
-Project.log = function (id, alt) {
-  Project.changes.push([id, alt]);
-}
-
-Project.clean = function() {
-    var changes = Project.changes;
-    Project.changes = [];
-    var returns = {};
-    $.each(changes, function (k,v) {
-      returns[v[0]] = (returns[v[0]]==undefined) ? v[1] : $.extend(returns[v[0]], v[1]);
-    });
-    return returns;
-}
-
-Project.batchUpdate = function () {
-    var update = Project.clean();
-
-    $.each(update, function (k, v) {
-        console.log(k, v);
-    });
-
-    if (!$.isEmptyObject(update)) {
-        API.post('batch/update', {lists:update}, function (response) {
-            console.log(response);
-        });
-    }
-}
-
 Project.S4 = function () {
    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
 }
 
 Project.guid  = function () {
    return (Project.S4()+Project.S4()+"-"+Project.S4()+"-"+Project.S4()+"-"+Project.S4()+"-"+Project.S4()+Project.S4()+Project.S4());
+}
+
+// ------------------------------------------
+$(function () {
+  var Xlist = function () {
+
+  }
+
+  Xlist.prototype.bootstrap = function (data, container) {
+    this.data = data;
+    this.container = container;
+    this.render();
+  }
+
+  function render (arr, container) {
+    if (arr.length==0) {
+      var p = new Project();
+      container.append(p);
+      p.sorting();
+    } else {
+      $.each(arr, function (k, v) {
+        var p = new Project(v);
+        container.append(p);
+        if (!$.isEmptyObject(v.children)) {
+          render(v.children, p.domChildren());
+          p.render();// 父级重新渲染
+        }
+      });
+    }
+    $('.title:first').focus();
+  }
+
+  Xlist.prototype.render = function () {
+    render(this.data, this.container);
+  }
+
+  Xlist.prototype.zoomin = function (id) {
+    this.container.html('');
+    Xlist.breadcrumb = [];
+    var data = (id==0)?this.data:[findById(id, this.data)];
+    render(data, this.container);
+    if (id!=0) {
+      var project = this.container.find('.project:first').xlist();
+      project.domChildren().css('margin-left', 0).css('padding-left', 0).css('border-left', 0);
+      project.domPlus().hide(); project.domDot().hide();
+
+      $('#breadcrumb').html(makeBreadcrumb(Xlist.breadcrumb)).show();
+    } else {
+      $('#breadcrumb').hide();
+    }
+  }
+
+  function makeBreadcrumb(x) {
+    x.unshift([0, 'Home']);
+    var str = '';
+    for (var i in x) {
+      str += '<a href="javascript:;" onclick="Xlist.zoomin(\''+x[i][0]+'\');">'+x[i][1]+'</a> > ';
+    }
+    return str;
+  }
+
+  Xlist.breadcrumb = [];
+
+  findById = function (id, data, breadcrumb) {
+    var $return;
+
+    breadcrumb = breadcrumb||[];
+
+    if (typeof data[id] == 'undefined') {
+      for (var i in data) {
+        if (!$.isEmptyObject(data[i]['children'])) {
+          breadcrumb.push([data[i]['id'],data[i]['title']]);
+          if ($return = findById(id, data[i]['children'], breadcrumb)) {
+            Xlist.breadcrumb = breadcrumb;
+            return $return;
+          }
+        }
+      }
+    } else {
+      return data[id];
+    }
+
+    return false;
+  }
+
+  // 记录属性修改
+  Xlist.prototype.changes = [];
+
+  Xlist.prototype.setData = function (id, att) {
+    Xlist.breadcrumb = [];
+    var obj = findById(id, this.data);
+    obj = $.extend(obj, att);
+
+    this.changes.push([id, alt]);
+  }
+
+  Xlist.prototype.cleanup = function() {
+      var changes = this.changes;
+      this.changes = [];
+      var returns = {};
+      $.each(changes, function (k,v) {
+        returns[v[0]] = (returns[v[0]]==undefined) ? v[1] : $.extend(returns[v[0]], v[1]);
+      });
+      return returns;
+  }
+
+  Xlist.prototype.batchUpdate = function () {
+
+      var update = this.cleanup();
+
+      $.each(update, function (k, v) {
+          console.log(k, v);
+      });
+
+      if (!$.isEmptyObject(update)) {
+          API.post('batch/update', {lists:update}, function (response) {
+              console.log(response);
+          });
+      }
+  }
+
+  window.Xlist = new Xlist;
+});
+
+
+var by = function(name,minor){
+  return function(o,p){
+      var a,b;
+      if(o && p && typeof o === 'object' && typeof p ==='object'){
+          a = o[name];
+          b = p[name];
+          if(a === b){
+              return typeof minor === 'function' ? minor(o,p):0;
+          }
+          if(typeof a === typeof b){
+              return a <b ? -1:1;
+          }
+          return typeof a < typeof b ? -1 : 1;
+      }else{
+          thro("error");
+      }
+  }
 }

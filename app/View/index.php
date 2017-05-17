@@ -59,7 +59,8 @@
         });
     </script>
   </div>
-  <div class="container"></div>
+  <div class="container" id="breadcrumb" style="display:none;">Home<hr /></div>
+  <div class="container" id="container"></div>
   <script id="project" type="tmp">
     <div class="project">
         <div class="row">
@@ -77,15 +78,15 @@
   <script>
     API.url = "<?php echo $apiurl; ?>";
     API.token = "<?php echo $token; ?>";
-    var xlist;
     $(function () {
         API.get('xlist', {}, function (rs) {
-            xlist = rs.data;
-            Project.render(xlist, $('.container'));
+             Xlist.bootstrap(rs.data, $('#container'));
         });
 
         // 定时提交改变
-        setInterval(Project.batchUpdate, 3000);
+        setInterval(function () {
+            Xlist.batchUpdate();
+        }, 3000);
     });
 
     function notify(title, body, options) {
