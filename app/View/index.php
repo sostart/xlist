@@ -13,6 +13,8 @@
 
   <style>
     .container {}
+    .project {}
+    .selected { background-color:#bbb; }
     .row { margin-top:3px;  cursor:text; }
     .expand { float:left; margin-right:5px; width:14px; height:14px; }
     .dot { float:left; margin-right:5px; width:20px; height:20px; background-image:url(/static/images/dot.svg); cursor:pointer; background-color:transparent; border-radius:12px; }
@@ -30,34 +32,7 @@
 <body>
   <div style="height:50px;">
     <button id="hide_members">隐藏/显示成员列</button>
-    <script>$(function () { $('#hide_members').click(function () { if ($('.members').is(':visible')) {$('.members').hide();} else {$('.members').show();} }); });</script>
     <button id="tomato" data-s="0">番茄</button>
-    <script>
-        $(function () { 
-            $('#tomato').click(function () {
-                // 停止
-                if ($(this).data('s')>0) {
-                    $(this).html('番茄').data('s', 0);
-                    clearTimeout($(this).data('timer'));
-                    return false;
-                }
-                
-                // 启动
-                $('#tomato').data('s', 26);
-                (function () {
-                    var s = $('#tomato').data('s')-1;
-                    if (s>0) { 
-                        // 循环 1分钟
-                        $('#tomato').data('timer', setTimeout(arguments.callee, 60000));
-                    } else if (s==0) {
-                        $('#tomato').after('<span class="glyphicon glyphicon-plane"></span>');
-                        notify('叮叮叮', '休息时间休息时间', {timeout: 20});
-                    }
-                    $('#tomato').html('番茄'+(s?' '+s:'')).data('s', s);
-                })();
-            });
-        });
-    </script>
   </div>
   <div class="container" id="breadcrumb" style="display:none;">Home<hr /></div>
   <div class="container" id="container"></div>
@@ -75,6 +50,35 @@
   </script>
   
   <script src="/static/js/API.js"></script>
+
+  <script>$(function () { $('#hide_members').click(function () { if ($('.members').is(':visible')) {$('.members').hide();} else {$('.members').show();} }); });</script>
+  <script>
+      $(function () { 
+          $('#tomato').click(function () {
+              // 停止
+              if ($(this).data('s')>0) {
+                  $(this).html('番茄').data('s', 0);
+                  clearTimeout($(this).data('timer'));
+                  return false;
+              }
+              
+              // 启动
+              $('#tomato').data('s', 26);
+              (function () {
+                  var s = $('#tomato').data('s')-1;
+                  if (s>0) { 
+                      // 循环 1分钟
+                      $('#tomato').data('timer', setTimeout(arguments.callee, 60000));
+                  } else if (s==0) {
+                      $('#tomato').after('<span class="glyphicon glyphicon-plane"></span>');
+                      notify('叮叮叮', '休息时间休息时间', {timeout: 20});
+                  }
+                  $('#tomato').html('番茄'+(s?' '+s:'')).data('s', s);
+              })();
+          });
+      });
+  </script>
+
   <script>
     API.url = "<?php echo $apiurl; ?>";
     API.token = "<?php echo $token; ?>";

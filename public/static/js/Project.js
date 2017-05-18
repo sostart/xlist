@@ -705,7 +705,7 @@ $(function () {
     var obj = findById(id, this.data);
     obj = $.extend(obj, att);
 
-    this.changes.push([id, alt]);
+    this.changes.push([id, att]);
   }
 
   Xlist.prototype.cleanup = function() {
