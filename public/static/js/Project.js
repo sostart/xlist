@@ -1,3 +1,5 @@
+root_id = 0;
+
 $.fn.xlist = function () {
   if (this.hasClass('project')) {
     return new Project(this);
@@ -25,7 +27,7 @@ Project.prototype.create = function () {
   } else if (this.getParent()) {
     this.after(newlist.setData('pid', this.getParent().data('id')));
   } else {
-    this.after(newlist.setData('pid', 0));
+    this.after(newlist.setData('pid', root_id));
   }
   newlist.domTitle().focus();
   newlist.sorting();
@@ -173,7 +175,7 @@ Project.prototype.bindEvent = function () {
       }
   });
 
-  // 标题
+  // 成员
   project.domMembers().keydown(function (e) {
       if (e.altKey==1) {
           if (e.keyCode==39) {
@@ -243,20 +245,6 @@ Project.prototype.bindEvent = function () {
               deleted.push(v);
           }
       });
-
-      if (added.length>0 || deleted.length>0) {
-          // 修改影响父级
-          //var parent = get_parent(project);
-          //if (parent) {
-              //if (added.length>0) {
-                  //add_members(parent, added);
-              //}
-              //if (deleted.length>0) {
-                  //remove_members(parent, deleted);
-              //}
-              //parent.find('.members:first').change();
-          //}
-      }
   });
 
   return this;
@@ -478,7 +466,7 @@ Project.prototype.outdent = function () {
     parent.after(this);
     this.domTitle().focus();
 
-    this.setData('pid', parent.getParent() ? parent.getParent().data('id') : 0);
+    this.setData('pid', parent.getParent() ? parent.getParent().data('id') : root_id);
     this.sorting();
   }
   return this;
@@ -491,8 +479,14 @@ Project.prototype.up = function () {
     this.after(pre);
 
     var sort = this.data('sort');
-    this.setData('sort', pre.data('sort'));
-    pre.setData('sort', sort);
+    var pre_sort = pre.data('sort');
+
+    if (sort == pre_sort) {
+      pre.sorting();
+    } else {
+      this.setData('sort', pre_sort);
+      pre.setData('sort', sort);
+    }
   }
 
   return this;
@@ -505,8 +499,14 @@ Project.prototype.down = function () {
     this.before(nex);
 
     var sort = this.data('sort');
-    this.setData('sort', nex.data('sort'));
-    nex.setData('sort', sort);
+    var nex_sort = nex.data('sort');
+
+    if (sort == nex_sort) {
+      this.sorting();
+    } else {
+      this.setData('sort', nex_sort);
+      nex.setData('sort', sort);
+    }
   }
 
   return this;
@@ -583,6 +583,7 @@ Project.prototype.addChildren = function (p, top) {
 
 // zoomin
 Project.prototype.zoomin = function () {
+  this.expand();
   Xlist.zoomin($(this).data('id'));
 }
 
@@ -620,10 +621,42 @@ $(function () {
 
   }
 
+  // 初始化,设置数据和DOM
   Xlist.prototype.bootstrap = function (data, container) {
-    this.data = data;
+    this.zoom_data = this.data = data;
     this.container = container;
     this.render();
+  }
+
+  // 渲染
+  Xlist.prototype.render = function () {
+    render(this.zoom_data, this.container);
+  }
+
+  Xlist.prototype.add = function (project) {
+    console.log(project);
+  }
+
+  // zoomin
+  Xlist.prototype.zoomin = function (id) {
+    Xlist.breadcrumb = [];
+    this.zoom_data = (id==root_id)?this.data:[findById(id, this.data)];
+    this.container.html(''); render(this.zoom_data, this.container);
+    if (id!=root_id) {
+      var project = this.container.find('.project:first').xlist();
+      project.domChildren().css('margin-left', 0).css('padding-left', 0).css('border-left', 0);
+      project.domPlus().hide(); project.domDot().hide();
+
+      $('#breadcrumb').html(makeBreadcrumb(Xlist.breadcrumb)).show();
+    } else {
+      $('#breadcrumb').hide();
+    }
+  }
+
+  // 搜索
+  Xlist.prototype.search = function (keyword) {
+    var data = keyword==''?this.zoom_data:search(this.zoom_data, keyword);
+    this.container.html(''); render(data, this.container);
   }
 
   function render (arr, container) {
@@ -642,26 +675,6 @@ $(function () {
       });
     }
     $('.title:first').focus();
-  }
-
-  Xlist.prototype.render = function () {
-    render(this.data, this.container);
-  }
-
-  Xlist.prototype.zoomin = function (id) {
-    this.container.html('');
-    Xlist.breadcrumb = [];
-    var data = (id==0)?this.data:[findById(id, this.data)];
-    render(data, this.container);
-    if (id!=0) {
-      var project = this.container.find('.project:first').xlist();
-      project.domChildren().css('margin-left', 0).css('padding-left', 0).css('border-left', 0);
-      project.domPlus().hide(); project.domDot().hide();
-
-      $('#breadcrumb').html(makeBreadcrumb(Xlist.breadcrumb)).show();
-    } else {
-      $('#breadcrumb').hide();
-    }
   }
 
   function makeBreadcrumb(x) {
@@ -695,6 +708,17 @@ $(function () {
     }
 
     return false;
+  }
+
+  function search(data, keyword) {
+      var $return = {};
+      $.each(data, function (k, v) {
+        if (v.title.search(keyword)!=-1) {
+          $return[k] = v;
+        }
+        $.extend($return, search(v.children, keyword));
+      });
+      return $return;
   }
 
   // 记录属性修改
@@ -736,7 +760,7 @@ $(function () {
   window.Xlist = new Xlist;
 });
 
-
+// Arr.sort(by('field1', [by(field2)]))
 var by = function(name,minor){
   return function(o,p){
       var a,b;

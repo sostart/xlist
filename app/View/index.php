@@ -21,7 +21,7 @@
     .dot-has-children { background-color:#ccc; }
     .dot-hover { background-color:#aaa; }
     .title { float:left; margin-right:5px; outline:0px; min-width:50px; }
-    .members { float:right; margin-right:5px; outline:0px; width:200px; border:0px; padding:0px; }
+    .members { float:right; margin-right:5px; outline:0px; border:0px; padding:0px; }
     .status { float:right; margin-left:5px; display:none; }
     .children { margin-left:13px; padding-left:18px;  border-left:1px solid #ebebeb; display:none; }
     .completed {}
@@ -33,6 +33,7 @@
   <div style="height:50px;">
     <button id="hide_members">隐藏/显示成员列</button>
     <button id="tomato" data-s="0">番茄</button>
+    <input type="text" id="search" />
   </div>
   <div class="container" id="breadcrumb" style="display:none;">Home<hr /></div>
   <div class="container" id="container"></div>
@@ -80,8 +81,11 @@
   </script>
 
   <script>
+    // API
     API.url = "<?php echo $apiurl; ?>";
     API.token = "<?php echo $token; ?>";
+    
+    // 数据
     $(function () {
         API.get('xlist', {}, function (rs) {
              Xlist.bootstrap(rs.data, $('#container'));
@@ -91,8 +95,16 @@
         setInterval(function () {
             Xlist.batchUpdate();
         }, 3000);
+        
+        // 搜索
+        $('#search').keyup(function (e) {
+            if (e.keyCode==13) {
+                Xlist.search($(this).val());
+            }
+        });
     });
-
+    
+    // 通知
     function notify(title, body, options) {
         if (!Notify.needsPermission || Notify.isSupported()) {
             Notify.requestPermission(function () {
